@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<script>
+    $(document).ready(function () {
+        GetData();
+
+    });
+
+    function GetData() {
+        $.ajax(
+               {
+                   type: 'POST',
+                   url: '@Url.Action("GetChartValues", "Chart")',
+                   dataType: 'json',
+                   success: function (data) {
+                       CreateChart(data);
+                   },
+                   error: function (ex) {
+                   }
+               });
+    }
+
+    function CreateChart(data)
+    {
+        var settings = {
+            title: "",
+            description: "fdddg",
+            showLegend: true,
+            enableAnimations: true,
+            padding: { left: 20, top: 5, right: 20, bottom: 5 },
+            titlePadding: { left: 90, top: 0, right: 0, bottom: 10 },
+            source: data.items,
+            categoryAxis:
+                {
+                    dataField: 'SType',
+                    showGridLines: true,
+                    flip: false
+                },
+            colorScheme: 'scheme01',
+            seriesGroups:
+                [
+                    {
+                        type: 'column',
+                        orientation: 'vertical',
+                        columnsGapPercent: 100,
+                        toolTipFormatSettings: { thousandsSeparator: ',' },
+                        valueAxis:
+                        {
+                            flip: false,
+                            unitInterval: 500,
+                            minValue:500,
+                            maxValue: 10000,
+                            displayValueAxis: true,
+                            description: '',
+                            formatFunction: function (value) {
+                                return parseInt(value);
+                            }
+                        },
+                        series: [
+                                { dataField: 'Value', displayText: 'Cost (Rs)' }
+                        ]
+                    }
+                ]
+        };
+        // setup the chart
+        $('#jqxChart').jqxChart(settings);
+    }
+</script>
+<h2>Index</h2>
+<div id='jqxChart' style="width:600px; height: 400px" />
+
+
